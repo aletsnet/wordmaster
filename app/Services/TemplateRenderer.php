@@ -97,12 +97,12 @@ class TemplateRenderer
             $currentPath = '/' . $currentPath;
         }
 
-        $html = '<ul class="flex space-x-6 items-center">';
+        $html = '<ul class="nav-menu" id="navMenu">';
         foreach ($menu->items as $item) {
             $url    = htmlspecialchars($item->url, ENT_QUOTES);
             $title  = htmlspecialchars($item->title, ENT_QUOTES);
-            $active = ($url === $currentPath) ? ' border-red-600' : ' border-transparent';
-            $html  .= '<li><a href="' . $url . '" class="text-white border-2' . $active . ' hover:border-white px-3 py-1.5 rounded-lg transition">' . $title . '</a></li>';
+            $active = ($url === $currentPath) ? ' active' : '';
+            $html  .= '<li><a href="' . $url . '" class="' . $active . '">' . $title . '</a></li>';
         }
         $html .= '</ul>';
 
