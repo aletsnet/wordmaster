@@ -94,7 +94,8 @@ class MenuController extends Controller
         $data = $request->validate([
             'title' => 'required|max:255',
             'url' => 'nullable|max:255',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
+            'parent_id' => 'nullable|exists:menu_items,id',
         ]);
 
         $item->update($data);

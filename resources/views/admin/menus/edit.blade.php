@@ -84,19 +84,83 @@
                         <strong>{{ $item->title }}</strong>
                         <p class="text-sm text-gray-500">{{ $item->url }} ({{ $item->type }})</p>
                     </div>
-                    <form action="{{ route('admin.menus.items.destroy', [$menu, $item]) }}" method="POST" onsubmit="return confirm('{{ __('admin.confirm_delete_item') }}')">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:text-red-900 text-sm">{{ __('admin.delete') }}</button>
-                    </form>
+                    <div class="flex gap-2">
+                        <button onclick="toggleEdit(this)" class="text-blue-600 hover:text-blue-900 text-sm">{{ __('admin.edit') }}</button>
+                        <form action="{{ route('admin.menus.items.destroy', [$menu, $item]) }}" method="POST" onsubmit="return confirm('{{ __('admin.confirm_delete_item') }}')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-900 text-sm">{{ __('admin.delete') }}</button>
+                        </form>
+                    </div>
                 </div>
+
+                <form class="edit-form mt-3 border-t pt-3 space-y-3 hidden" action="{{ route('admin.menus.items.update', [$menu, $item]) }}" method="POST">
+                    @csrf @method('PUT')
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm text-gray-700">{{ __('admin.title') }}</label>
+                            <input type="text" name="title" value="{{ $item->title }}" class="w-full border rounded px-2 py-1 text-sm" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700">{{ __('admin.url') }}</label>
+                            <input type="text" name="url" value="{{ $item->url }}" class="w-full border rounded px-2 py-1 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700">{{ __('admin.order') }}</label>
+                            <input type="number" name="order" value="{{ $item->order }}" class="w-full border rounded px-2 py-1 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700">{{ __('admin.parent_item') }}</label>
+                            <select name="parent_id" class="w-full border rounded px-2 py-1 text-sm">
+                                <option value="">{{ __('admin.no_parent') }}</option>
+                                @foreach($menu->items as $pitem)
+                                @if($pitem->id !== $item->id)
+                                <option value="{{ $pitem->id }}" @selected($pitem->id === $item->parent_id)>{{ $pitem->title }}</option>
+                                @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">{{ __('admin.update_item') }}</button>
+                        <button type="button" onclick="toggleEdit(this)" class="text-gray-600 text-sm">{{ __('admin.cancel') }}</button>
+                    </div>
+                </form>
+
                 @if($item->children->isNotEmpty())
                 <ul class="ml-4 mt-2 space-y-1">
                     @foreach($item->children as $child)
                     <li class="flex justify-between items-center text-sm border-t pt-1">
-                        <span>{{ $child->title }}</span>
-                        <form action="{{ route('admin.menus.items.destroy', [$menu, $child]) }}" method="POST">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-900">{{ __('admin.delete') }}</button>
+                        <div>
+                            <span>{{ $child->title }}</span>
+                            <p class="text-xs text-gray-400">{{ $child->url }}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="toggleEdit(this)" class="text-blue-600 hover:text-blue-900 text-xs">{{ __('admin.edit') }}</button>
+                            <form action="{{ route('admin.menus.items.destroy', [$menu, $child]) }}" method="POST">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900 text-xs">{{ __('admin.delete') }}</button>
+                            </form>
+                        </div>
+                        <form class="edit-form mt-2 border-t pt-2 space-y-2 w-full hidden" action="{{ route('admin.menus.items.update', [$menu, $child]) }}" method="POST">
+                            @csrf @method('PUT')
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-xs text-gray-700">{{ __('admin.title') }}</label>
+                                    <input type="text" name="title" value="{{ $child->title }}" class="w-full border rounded px-2 py-1 text-xs" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-700">{{ __('admin.url') }}</label>
+                                    <input type="text" name="url" value="{{ $child->url }}" class="w-full border rounded px-2 py-1 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-700">{{ __('admin.order') }}</label>
+                                    <input type="number" name="order" value="{{ $child->order }}" class="w-full border rounded px-2 py-1 text-xs">
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="submit" class="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">{{ __('admin.update_item') }}</button>
+                                <button type="button" onclick="toggleEdit(this)" class="text-gray-600 text-xs">{{ __('admin.cancel') }}</button>
+                            </div>
                         </form>
                     </li>
                     @endforeach
@@ -115,5 +179,12 @@ document.getElementById('itemType').addEventListener('change', function() {
     document.getElementById('pageSelect').classList.toggle('hidden', this.value !== 'page');
     document.getElementById('categorySelect').classList.toggle('hidden', this.value !== 'category');
 });
+
+function toggleEdit(btn) {
+    var form = btn.closest('li').querySelector('.edit-form');
+    if (form) {
+        form.classList.toggle('hidden');
+    }
+}
 </script>
 @endsection
