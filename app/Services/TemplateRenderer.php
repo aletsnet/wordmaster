@@ -7,6 +7,7 @@ use App\Models\Option;
 use App\Models\Template;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class TemplateRenderer
 {
@@ -20,6 +21,8 @@ class TemplateRenderer
 
         $templateVars = $this->templateSpecificVars($template);
         $data = array_merge($this->commonLayoutVars(), $templateVars, $data);
+
+        $data['seo_meta_html'] = $this->buildSeoMetaHtml($data);
 
         $compiled = Blade::compileString($template->content);
 
@@ -137,5 +140,45 @@ class TemplateRenderer
     public static function getTemplateOptions(): array
     {
         return Template::pluck('name', 'slug')->toArray();
+    }
+
+    private function buildSeoMetaHtml(array $data): string
+    {
+        $siteTitle = $data['site_title'] ?? config('app.name');
+        $currentUrl = url()->current();
+        $siteDescription = Option::getValue('site_description', '');
+
+        $page = $data['page'] ?? $data['post'] ?? null;
+
+        if ($page) {
+            $title = $page->title;
+            $metaDescription = $page->excerpt ?: Str::limit(strip_tags($page->content), 160);
+            $ogImage = $page->featured_image ?: '';
+        } else {
+            $title = $data['title'] ?? $siteTitle;
+            $metaDescription = $siteDescription;
+            $ogImage = Option::getValue('site_logo', '');
+        }
+
+        $html = '';
+        $html .= '<title>' . e($title) . (($title !== $siteTitle) ? ' - ' . e($siteTitle) : '') . "</title>\n";
+        $html .= '<meta name="description" content="' . e($metaDescription) . "\">\n";
+        $html .= '<link rel="canonical" href="' . e($currentUrl) . "\">\n";
+        $html .= '<meta property="og:site_name" content="' . e($siteTitle) . "\">\n";
+        $html .= '<meta property="og:url" content="' . e($currentUrl) . "\">\n";
+        $html .= '<meta property="og:type" content="article">' . "\n";
+        $html .= '<meta property="og:title" content="' . e($title) . "\">\n";
+        $html .= '<meta property="og:description" content="' . e($metaDescription) . "\">\n";
+        if ($ogImage) {
+            $html .= '<meta property="og:image" content="' . e($ogImage) . "\">\n";
+        }
+        $html .= '<meta name="twitter:card" content="summary_large_image">' . "\n";
+        $html .= '<meta name="twitter:title" content="' . e($title) . "\">\n";
+        $html .= '<meta name="twitter:description" content="' . e($metaDescription) . "\">\n";
+        if ($ogImage) {
+            $html .= '<meta name="twitter:image" content="' . e($ogImage) . "\">\n";
+        }
+
+        return $html;
     }
 }

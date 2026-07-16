@@ -2,11 +2,16 @@
     $siteLayoutSlug = \App\Models\Option::getValue('site_layout');
 @endphp
 @if($siteLayoutSlug)
-{!! (new \App\Services\TemplateRenderer())->render($siteLayoutSlug, [
-    'content' => $__env->yieldContent('content'),
-    'title'   => $__env->yieldContent('title')
-               ?: \App\Models\Option::getValue('site_title', config('app.name')),
-]) !!}
+@php
+    $seoData = [
+        'content' => $__env->yieldContent('content'),
+        'title'   => $__env->yieldContent('title')
+                   ?: \App\Models\Option::getValue('site_title', config('app.name')),
+    ];
+    if (isset($page)) $seoData['page'] = $page;
+    if (isset($post)) $seoData['post'] = $post;
+@endphp
+{!! (new \App\Services\TemplateRenderer())->render($siteLayoutSlug, $seoData) !!}
 @else
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
