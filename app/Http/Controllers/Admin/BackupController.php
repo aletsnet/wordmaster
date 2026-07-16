@@ -15,7 +15,9 @@ use App\Models\Template;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use ZipArchive;
 
 class BackupController extends Controller
@@ -132,7 +134,7 @@ class BackupController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::statement('PRAGMA foreign_keys = OFF');
+            DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
             // Clear all CMS data
             DB::table('contact_submissions')->delete();
@@ -171,7 +173,10 @@ class BackupController extends Controller
                         continue;
                     }
                     // Insert backup user with original ID
-                    DB::table('users')->insert($row);
+                    if (!isset($row['password'])) {
+                        $row['password'] = Hash::make(Str::random(40));
+                    }
+                    DB::table('users')->insert($this->normalizeDates($row));
                 }
             }
 
@@ -185,7 +190,7 @@ class BackupController extends Controller
             foreach ($tables as $table) {
                 if (!empty($data['data'][$table])) {
                     foreach ($data['data'][$table] as $row) {
-                        DB::table($table)->insert($row);
+                        DB::table($table)->insert($this->normalizeDates($row));
                     }
                 }
             }
@@ -216,11 +221,11 @@ class BackupController extends Controller
                 }
             }
 
-            DB::statement('PRAGMA foreign_keys = ON');
+            DB::statement('SET FOREIGN_KEY_CHECKS = 1');
             DB::commit();
 
         } catch (\Exception $e) {
-            DB::statement('PRAGMA foreign_keys = ON');
+            DB::statement('SET FOREIGN_KEY_CHECKS = 1');
             DB::rollBack();
             $this->deleteDirectory($tempDir);
             return back()->with('error', 'Import failed: ' . $e->getMessage());
@@ -230,6 +235,16 @@ class BackupController extends Controller
 
         return redirect()->route('admin.backups.index')
             ->with('success', __('messages.backup_imported'));
+    }
+
+    private function normalizeDates(array $row): array
+    {
+        foreach ($row as $key => $value) {
+            if (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/', $value)) {
+                $row[$key] = str_replace('T', ' ', substr($value, 0, 19));
+            }
+        }
+        return $row;
     }
 
     private function copyDirectory(string $source, string $dest): void
