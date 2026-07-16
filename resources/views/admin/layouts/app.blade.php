@@ -21,10 +21,12 @@
                     <li><a href="{{ route('admin.categories.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-700' : '' }}">{{ __('admin.categories') }}</a></li>
                     <li><a href="{{ route('admin.tags.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.tags.*') ? 'bg-gray-700' : '' }}">{{ __('admin.tags') }}</a></li>
                     <li><a href="{{ route('admin.media.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.media.*') ? 'bg-gray-700' : '' }}">{{ __('admin.media') }}</a></li>
+                    <li><a href="{{ route('admin.contact-submissions.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.contact-submissions.*') ? 'bg-gray-700' : '' }}">{{ __('admin.contact_submissions') }}@php $unread = \App\Models\ContactSubmission::unread()->count(); @endphp @if($unread > 0)<span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full ml-2">{{ $unread }}</span>@endif</a></li>
                     <li><a href="{{ route('admin.menus.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.menus.*') ? 'bg-gray-700' : '' }}">{{ __('admin.menus') }}</a></li>
                     <li><a href="{{ route('admin.templates.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.templates.*') ? 'bg-gray-700' : '' }}">{{ __('admin.templates') }}</a></li>
                     <li><a href="{{ route('admin.users.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.users.*') ? 'bg-gray-700' : '' }}">{{ __('admin.users') }}</a></li>
                     <li><a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.settings.*') ? 'bg-gray-700' : '' }}">{{ __('admin.settings') }}</a></li>
+                    <li><a href="{{ route('admin.backups.index') }}" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.backups.*') ? 'bg-gray-700' : '' }}">{{ __('admin.backups') }}</a></li>
                     <li class="pt-4 border-t border-gray-700 mt-4">
                         <a href="{{ route('home') }}" class="block px-4 py-2 rounded hover:bg-gray-700">{{ __('admin.view_site') }}</a>
                     </li>

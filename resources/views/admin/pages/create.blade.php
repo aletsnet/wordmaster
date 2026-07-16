@@ -16,6 +16,7 @@
     <div class="mb-4">
         <label class="block text-gray-700 mb-2">{{ __('admin.content') }}</label>
         <div class="flex gap-2 mb-2">
+            <button type="button" onclick="openLinkPicker(function(url, text) { insertLinkTag(url, text); })" class="px-3 py-1.5 bg-gray-100 border rounded text-sm hover:bg-gray-200">{{ __('admin.insert_link') }}</button>
             <button type="button" onclick="openMediaPicker(function(media) { insertImageTag(media.url, media.alt); })" class="px-3 py-1.5 bg-gray-100 border rounded text-sm hover:bg-gray-200">{{ __('admin.insert_image') }}</button>
         </div>
         <textarea name="content" rows="15" class="w-full border rounded px-3 py-2 font-mono text-sm">{{ old('content') }}</textarea>
@@ -40,10 +41,12 @@
             <button type="button" onclick="openMediaPicker(function(media) { document.getElementById('featured_image').value = media.url; })" class="px-4 py-2 bg-gray-100 border rounded hover:bg-gray-200 whitespace-nowrap">{{ __('admin.browse_media') }}</button>
         </div>
     </div>
+
     <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">{{ __('admin.create_page') }}</button>
 </form>
 
 @include('admin.media.picker-modal')
+@include('admin.links.picker-modal')
 <script>
 function insertIntoContent(html) {
     const textarea = document.querySelector('textarea[name="content"]');
@@ -55,6 +58,9 @@ function insertIntoContent(html) {
 }
 function insertImageTag(url, alt) {
     insertIntoContent('<img src="' + url + '" alt="' + alt + '">');
+}
+function insertLinkTag(url, text) {
+    insertIntoContent('<a href="' + url + '">' + text + '</a>');
 }
 </script>
 @endsection

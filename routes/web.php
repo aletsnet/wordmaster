@@ -6,11 +6,14 @@ use App\Http\Controllers\Admin\MediaController as AdminMediaController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Admin\TemplateController as AdminTemplateController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Front\CategoryController;
+use App\Http\Controllers\Front\ContactController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Front\TagController;
@@ -50,6 +53,16 @@ Route::middleware(['auth', 'admin'])
         Route::put('menus/{menu}/items/{item}', [AdminMenuController::class, 'updateItem'])->name('menus.items.update');
         Route::delete('menus/{menu}/items/{item}', [AdminMenuController::class, 'removeItem'])->name('menus.items.destroy');
 
+        Route::get('contact-submissions', [ContactSubmissionController::class, 'index'])->name('contact-submissions.index');
+        Route::get('contact-submissions/{contact_submission}', [ContactSubmissionController::class, 'show'])->name('contact-submissions.show');
+        Route::delete('contact-submissions/{contact_submission}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
+
+        Route::get('link-picker/data', [AdminPostController::class, 'linkPickerData'])->name('link-picker.data');
+
+        Route::get('backups', [BackupController::class, 'index'])->name('backups.index');
+        Route::get('backups/export', [BackupController::class, 'export'])->name('backups.export');
+        Route::post('backups/import', [BackupController::class, 'import'])->name('backups.import');
+
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
     });
@@ -66,6 +79,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::post('/contacto', [ContactController::class, 'send'])->name('contact.send');
 
 require __DIR__ . '/auth.php';
 

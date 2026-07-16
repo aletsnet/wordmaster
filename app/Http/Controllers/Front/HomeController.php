@@ -66,6 +66,10 @@ class HomeController extends Controller
             ]));
         }
 
+        if ($slug === 'contacto') {
+            return view('front.contact.show', compact('post') + ['page' => $post]);
+        }
+
         if ($post->type === 'page') {
             return view('front.pages.show', compact('post') + ['page' => $post]);
         }

@@ -16,6 +16,7 @@
     <div class="mb-4">
         <label class="block text-gray-700 mb-2">{{ __('admin.content') }}</label>
         <div class="flex gap-2 mb-2">
+            <button type="button" onclick="openLinkPicker(function(url, text) { insertLinkTag(url, text); })" class="px-3 py-1.5 bg-gray-100 border rounded text-sm hover:bg-gray-200">{{ __('admin.insert_link') }}</button>
             <button type="button" onclick="openMediaPicker(function(media) { insertImageTag(media.url, media.alt); })" class="px-3 py-1.5 bg-gray-100 border rounded text-sm hover:bg-gray-200">{{ __('admin.insert_image') }}</button>
         </div>
         <textarea name="content" rows="15" class="w-full border rounded px-3 py-2 font-mono text-sm">{{ old('content', $post->content) }}</textarea>
@@ -68,6 +69,7 @@
 </form>
 
 @include('admin.media.picker-modal')
+@include('admin.links.picker-modal')
 <script>
 function insertIntoContent(html) {
     const textarea = document.querySelector('textarea[name="content"]');
@@ -79,6 +81,9 @@ function insertIntoContent(html) {
 }
 function insertImageTag(url, alt) {
     insertIntoContent('<img src="' + url + '" alt="' + alt + '">');
+}
+function insertLinkTag(url, text) {
+    insertIntoContent('<a href="' + url + '">' + text + '</a>');
 }
 </script>
 @endsection

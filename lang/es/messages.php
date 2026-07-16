@@ -30,4 +30,6 @@ return [
     'user_deleted'          => 'Usuario eliminado exitosamente.',
     'cannot_delete_yourself'=> 'No puedes eliminarte a ti mismo.',
     'settings_saved'        => 'Configuraciones guardadas exitosamente.',
+    'contact_deleted'       => 'Mensaje eliminado exitosamente.',
+    'backup_imported'       => 'Respaldo importado exitosamente. Todo el contenido ha sido restaurado.',
 ];

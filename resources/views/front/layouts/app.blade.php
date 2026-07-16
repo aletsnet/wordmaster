@@ -15,6 +15,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ \App\Models\Option::getValue('site_title', config('app.name')) }}@hasSection('title') - @yield('title')@endif</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    @php $customCss = \App\Models\Option::getValue('custom_css'); @endphp
+    @if($customCss)<style>{{ $customCss }}</style>@endif
 </head>
 <body class="bg-gray-50">
     <header class="bg-white shadow">

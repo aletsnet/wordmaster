@@ -96,4 +96,12 @@ class PostController extends Controller
         return redirect()->route('admin.posts.index')
             ->with('success', __('messages.post_deleted'));
     }
+
+    public function linkPickerData()
+    {
+        $pages = Post::ofType('page')->latest()->get(['id', 'title', 'slug']);
+        $posts = Post::ofType('post')->latest()->get(['id', 'title', 'slug']);
+
+        return response()->json(compact('pages', 'posts'));
+    }
 }

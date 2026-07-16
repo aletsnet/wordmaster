@@ -28,6 +28,10 @@
         <h3 class="text-gray-500 text-sm">{{ __('admin.users') }}</h3>
         <p class="text-3xl font-bold">{{ $users }}</p>
     </div>
+    <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-gray-500 text-sm">{{ __('admin.contact_submissions') }}</h3>
+        <p class="text-3xl font-bold {{ $unreadMessages > 0 ? 'text-red-600' : '' }}">{{ $unreadMessages }} <span class="text-sm text-gray-500">{{ __('admin.unread') }}</span></p>
+    </div>
 </div>
 <div class="bg-white rounded-lg shadow p-6">
     <h3 class="text-lg font-bold mb-4">{{ __('admin.recent_posts') }}</h3>

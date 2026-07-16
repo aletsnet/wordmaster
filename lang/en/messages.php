@@ -30,4 +30,6 @@ return [
     'user_deleted'          => 'User deleted successfully.',
     'cannot_delete_yourself'=> 'You cannot delete yourself.',
     'settings_saved'        => 'Settings saved successfully.',
+    'contact_deleted'       => 'Message deleted successfully.',
+    'backup_imported'       => 'Backup imported successfully. All content has been restored.',
 ];
